@@ -1,0 +1,16 @@
+{application, solo,
+ [
+  {description, "a duplicate call suppression application"},
+  {vsn, "1.0"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  sasl
+                 ]},
+  {mod, { solo_app, [solo_sup, 
+                     solo_reg, 
+                     solo]
+        }},
+  {env, []}
+ ]}.
