@@ -1,14 +1,6 @@
 %%%-------------------------------------------------------------------
 %%% @author Páll Ásgeirsson <solvip@gmail.com>
 %%% @copyright (C) 2015, Sölvi Páll Ásgeirsson
-%%% @doc
-%%%
-%%% solo_worker is responsible for performing the actual
-%%% duplicate call suppression
-%%%
-%%% The public api is exposed in solo.erl.
-%%% 
-%%% @end
 %%% Created : 14 May 2015 by Sölvi Páll Ásgeirsson <solvip@gmail.com>
 %%%-------------------------------------------------------------------
 -module(solo).
