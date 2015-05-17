@@ -39,7 +39,7 @@ A caveat to be aware of is that part of the stack trace is lost as Fun is actual
 
 ## Performance
 
-Solo is written to have reasonably low overhead.  You can expect to be able to throughput well over 100000 calls per second on modern hardware.
+Solo is written to have reasonably low overhead.  You can expect it to be able to throughput well over 100 thousand calls per second on modern hardware.
 By default, four processes are pooled, each responsible for roughly 1/4th of the keyspace.
 If you think that you need more/less, you can set the application environment variable `pool_size` to the desired value.
 
