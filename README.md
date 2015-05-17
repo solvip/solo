@@ -43,7 +43,7 @@ A caveat to be aware of is that part of the stack trace is lost as Fun is actual
 call(Key::term(), Fun::fun()) -> term() | none().
 ```
 
-Equivalent to call(Key, Fun, 5000).
+Equivalent to `call(Key, Fun, 5000)`.
 
 ### call/3
 
@@ -51,13 +51,13 @@ Equivalent to call(Key, Fun, 5000).
 call(Key::term(), Fun::fun(), Timeout::non_neg_integer()) -> term() | none().
 ```
 
-Call Fun with duplicate call suppression.
-Only a single instance of Fun can be in flight at any time for Key.
-If subsequent callers call call with the same Key, they receive a copy of Fun's return value.
+Call `Fun`, a function of arity 0, with duplicate call suppression.
+Only a single instance of `Fun` can be in flight at any time for `Key`.
+If concurrent callers call call/3 with the same `Key`, they receive a copy of `Fun`'s return value.
 
-If Fun doesn't return within Timeout milliseconds, it will be killed and call/3 exits with reason {timeout, _}.
+If `Fun` doesn't return within `Timeout` milliseconds, it will be killed and call/3 exits with reason `{timeout, _}`.
 
-If Fun throws an exception, it will get reraised to all clients.
+If `Fun` throws an exception, it will get reraised to all clients.
 
 ## Performance
 
