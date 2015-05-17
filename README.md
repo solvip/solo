@@ -37,6 +37,28 @@ hello
 In the case where Fun returns exceptionally, solo tries to do the right thing and reraises the error to the caller.
 A caveat to be aware of is that part of the stack trace is lost as Fun is actually executed by a freshly spawned process.
 
+### call/2
+
+```erlang
+call(Key::term(), Fun::fun()) -> term() | none().
+```
+
+Equivalent to call(Key, Fun, 5000).
+
+### call/3
+
+```erlang
+call(Key::term(), Fun::fun(), Timeout::non_neg_integer()) -> term() | none().
+```
+
+Call Fun with duplicate call suppression.
+Only a single instance of Fun can be in flight at any time for Key.
+If subsequent callers call call with the same Key, they receive a copy of Fun's return value.
+
+If Fun doesn't return within Timeout milliseconds, it will be killed and call/3 exits with reason {timeout, _}.
+
+If Fun throws an exception, it will get reraised to all clients.
+
 ## Performance
 
 Solo is written to have reasonably low overhead.  You can expect it to be able to throughput well over 100 thousand calls per second on modern hardware.
