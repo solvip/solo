@@ -1,7 +1,7 @@
 Solo
 ====
 
-Solo is an Erlang application that performs duplicate call suppression.
+Solo is an Erlang OTP application that performs duplicate call suppression.
 
 Given key K and a fun F, solo ensures that only one execution of F is in flight at any time.
 If a duplicate call for the same key K is performed while F is executing, that caller will
