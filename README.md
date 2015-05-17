@@ -35,7 +35,7 @@ hello
 ```
 
 In the case where Fun returns exceptionally, solo tries to do the right thing and reraises the error to the caller.
-A caveat to be aware of, however, is that part of the stack trace is lost as Fun is actually executed by a freshly spawned process.
+A caveat to be aware of is that part of the stack trace is lost as Fun is actually executed by a freshly spawned process.
 
 ## Performance
 
