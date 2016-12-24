@@ -64,7 +64,7 @@ If `Fun` throws an exception, it will get reraised to all clients.
 ## Performance
 
 Solo is written to have reasonably low overhead.  You can expect it to be able to throughput well over 100 thousand calls per second on modern hardware.
-By default, four processes are pooled, each responsible for roughly 1/4th of the keyspace.
+By default, two processes per scheduler thread is pooled, each responsible for `1 / (2 * erlang:system_info(schedulers_online))` of the keyspace.
 If you think that you need more/less, you can set the application environment variable `pool_size` to the desired value.
 
 ## Contributing
