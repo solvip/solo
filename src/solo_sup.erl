@@ -23,7 +23,7 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-    NumWorkers = application:get_env(solo, pool_size, 4),
+    NumWorkers = application:get_env(solo, pool_size, default_num_workers()),
     WorkerSpec = lists:map(fun worker_spec/1, lists:seq(1, NumWorkers)),
     
     {ok, { {one_for_all, 3, 60}, [?CHILD(solo_reg, worker)] ++ WorkerSpec 
@@ -31,3 +31,10 @@ init([]) ->
 
 worker_spec(N) ->
     {N, {solo, start_link, []}, permanent, 1000, worker, [solo]}.
+
+%% @doc
+%% Default to double the number of scheduler threads
+%% @end
+-spec default_num_workers() -> pos_integer().
+default_num_workers() ->
+    erlang:system_info(schedulers_online) * 2.
