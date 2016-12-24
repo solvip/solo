@@ -1,3 +1,5 @@
 .rebar
 .eunit
 ebin/
+_build/
+*.beam

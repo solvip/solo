@@ -9,6 +9,8 @@ receive a copy of the return value of the original execution of F.
 
 Inspired by the singleflight mechanism in groupcache(https://github.com/golang/groupcache)
 
+[![Build Status](https://travis-ci.org/solvip/solo.svg?branch=master)](https://travis-ci.org/solvip/solo)
+
 ## Usage
 
 Simple example usage is as follows:
