@@ -87,7 +87,8 @@ runner(Key, Fun, Parent) ->
           catch Class:Reason ->
                   {exception, Class, Reason, erlang:get_stacktrace()}
           end,
-    Parent ! {return, self(), Key, Res}.
+    Parent ! {return, self(), Key, Res},
+    ok.
 
 %%%===================================================================
 %%% gen_server callbacks
