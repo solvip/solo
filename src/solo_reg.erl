@@ -27,18 +27,19 @@
 %%%===================================================================
 
 %% @doc
-%% Find the pid responsible for Key.  If no server exists in the process registry,
-%% get/1 exits with noproc.
+%% Find the pid responsible for Key or {error, noproc} if no process has
+%% been registered.
 %% @end
--spec get_member(Key::term()) -> pid() | none().
+-spec get_member(Key::term()) -> {ok, pid()} | {error, noproc}.
 get_member(Key) ->
     try ets:last(?TABLE) of
-        '$end_of_table' ->
-            erlang:exit(noproc);
+	'$end_of_table' ->
+	    {error, noproc};
         Size ->
-            ets:lookup_element(?TABLE, erlang:phash(Key, Size), 2)
+	    Pid = ets:lookup_element(?TABLE, erlang:phash(Key, Size), 2),
+            {ok, Pid}
     catch error:badarg ->
-            erlang:exit(noproc)
+	    erlang:exit({noproc, {solo_reg, get_member, [Key]}})
     end.
 
 %% @doc
@@ -46,7 +47,7 @@ get_member(Key) ->
 %% @end
 -spec register() -> ok.
 register() ->
-    gen_server:call(?SERVER, {register, self()}).
+    ok = gen_server:call(?SERVER, {register, self()}).
 
 %% @doc 
 %% Start the solo_reg server as a named process.

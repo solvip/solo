@@ -58,15 +58,15 @@ call(Key, Fun) ->
 %% @end
 -spec call(Key::term(), Fun::fun(), Timeout::non_neg_integer()) -> term() | none().
 call(Key, Fun, Timeout) when is_function(Fun), Timeout > 0 ->
-    try solo_reg:get_member(Key) of
-        Pid ->
+    case solo_reg:get_member(Key) of
+        {ok, Pid} ->
             case gen_server:call(Pid, {call, Key, Fun, Timeout}, Timeout) of
                 {local, Value} ->
                     Value;
                 {exception, Class, Reason, Stacktrace} ->
                     erlang:raise(Class, Reason, Stacktrace)
-            end
-    catch exit:noproc ->
+            end;
+	{error, noproc} ->
             erlang:exit({noproc, {solo, call, [Key, Fun, Timeout]}})
     end.
 
