@@ -9,6 +9,7 @@
 
 %% API
 -export([start_link/0,
+	 stop/0,
          get_member/1,
          register/0
         ]).
@@ -55,6 +56,12 @@ register() ->
 start_link() ->
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
+%% @doc
+%% Stop the solo_reg server
+%% @end
+stop() ->
+    gen_server:call(?SERVER, stop).
+
 %%%===================================================================
 %%% gen_server callbacks
 %%%===================================================================
@@ -76,7 +83,11 @@ handle_call({register, Pid}, _From, State) ->
         N ->
             ets:insert(?TABLE, {N + 1, Pid})
     end,
-    {reply, ok, State}.
+    {reply, ok, State};
+
+handle_call(stop, _From, State) ->
+    {stop, normal, ok, State}.
+
 
 handle_cast(_Msg, State) ->
     {stop, no_cast_clause, State}.

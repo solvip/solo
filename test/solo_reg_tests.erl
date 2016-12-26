@@ -13,8 +13,8 @@ start() ->
     {ok, Pid} = solo_reg:start_link(),
     Pid.
 
-stop(Pid) ->
-    gen_server:stop(Pid).
+stop(_Pid) ->
+    solo_reg:stop().
 
 get_member_exits_if_server_is_stopped_test() ->
     ?assertExit({noproc, {solo_reg, get_member, [whatever]}},
