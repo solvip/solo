@@ -30,7 +30,7 @@
       NumProcs :: pos_integer(),
       CallsPerProc :: pos_integer(),
       TimeTakenSec :: float(),
-      CallsPerSecond :: float().
+      CallsPerSecond :: pos_integer().
 short(NumKeys, NumProcs, CallsPerProc) ->
     {MicroSec, ok} = 
 	timer:tc(fun() ->
@@ -40,7 +40,7 @@ short(NumKeys, NumProcs, CallsPerProc) ->
 			 wait_for_done_messages(NumProcs)
 		 end),
     TimeTakenSec = MicroSec / 1000 / 1000,
-    CallsPerSecond = (CallsPerProc * NumProcs) / TimeTakenSec,
+    CallsPerSecond = trunc((CallsPerProc * NumProcs) / TimeTakenSec),
     
     {TimeTakenSec, CallsPerSecond}.
     
