@@ -94,6 +94,10 @@ runner(Key, Fun, Parent) ->
 %%% gen_server callbacks
 %%%===================================================================
 
+%% Construct a client key.
+-define(client_key(Key), {solo_client, Key}).
+-define(runner_key(Key), {solo_runner, Key}).
+
 init([]) ->
     solo_reg:register(),
     erlang:process_flag(trap_exit, true),
@@ -103,14 +107,14 @@ init([]) ->
 %% the calling process as a client waiting for the result.
 %% If there is a duplication function running, simply register the calling process as waiting.
 handle_call({call, Key, Fun, Timeout}, Client, State) ->
-    case erlang:get(ckey(Key)) of
+    case erlang:get(?client_key(Key)) of
         undefined -> 
             RunnerPid = spawn_link(?MODULE, runner, [Key, Fun, self()]),
             TimerRef = erlang:send_after(Timeout, self(), {timeout, RunnerPid, Key}),
-            erlang:put(rkey(RunnerPid), {Key, TimerRef}),
-            erlang:put(ckey(Key), [Client]);
+            erlang:put(?runner_key(RunnerPid), {Key, TimerRef}),
+            erlang:put(?client_key(Key), [Client]);
         Clients ->
-            erlang:put(ckey(Key), [Client | Clients])
+            erlang:put(?client_key(Key), [Client | Clients])
     end,
     
     {noreply, State}.
@@ -121,25 +125,25 @@ handle_cast(_Msg, State) ->
 %% Send return values to clients waiting for them.
 handle_info({return, RunnerPid, Key, Result}, State) ->
     %% Send the response to waiting clients.
-    Clients = erlang:erase(ckey(Key)),
+    Clients = erlang:erase(?client_key(Key)),
     reply_to_clients(Clients, Result),
 
     %% Cancel the timeout timer, remove the runner as a running process.
-    {Key, TimerRef} = erlang:erase(rkey(RunnerPid)),
+    {Key, TimerRef} = erlang:erase(?runner_key(RunnerPid)),
     erlang:cancel_timer(TimerRef),
     
     {noreply, State};
 
 %% Handle cleanup of timed out runner funs.
 handle_info({timeout, RunnerPid, Key}, State) ->
-    case erlang:erase(rkey(RunnerPid)) of
+    case erlang:erase(?runner_key(RunnerPid)) of
         undefined ->
             %% Process already exited.
             ok;
         {Key, _TimerRef} ->
             %% Send kill, as running fun could otherwise trap exits.
             exit(RunnerPid, kill),
-            erlang:erase(ckey(Key))
+            erlang:erase(?client_key(Key))
     end,
     {noreply, State};
 
@@ -157,14 +161,6 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
-
-%% Construct a runner key.
--spec rkey(pid()) -> {sf_runner, pid()}.
-rkey(Pid) -> {sf_runner, Pid}.
-
-%% Construct a client key.
--spec ckey(pid()) -> {sf_client, pid()}.
-ckey(Key) -> {sf_client, Key}.
 
 reply_to_clients([], _) ->
     ok;
