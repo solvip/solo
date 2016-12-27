@@ -77,9 +77,9 @@ profile_run_and_format(NumKeys, NumProcs, CallsPerProc, MaxDelayMs) ->
 			  supervisor:which_children(solo_sup)),
 
     profiling = eprof:start_profiling(SoloProcs),
-    run_and_format(NumKeys, NumProcs, CallsPerProc, MaxDelayMs),
-    eprof:stop_profiling(),
-    eprof:analyze(total).
+    ok = run_and_format(NumKeys, NumProcs, CallsPerProc, MaxDelayMs),
+    profiling_stopped = eprof:stop_profiling(),
+    ok = eprof:analyze(total).
 
 %% @doc
 %% Same as run; but pretty prints the input parameters and the results
