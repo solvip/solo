@@ -5,3 +5,7 @@ all:
 
 shell:
 	./rebar3 shell
+
+bench:
+	./rebar3 escriptize
+	./_build/default/bin/solo_bench
