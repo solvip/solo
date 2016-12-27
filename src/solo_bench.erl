@@ -11,9 +11,9 @@
 %% API
 -export([ format/1
 	, main/1
+	, profile_run_and_format/4
 	, run/4
 	, run_and_format/4
-	, profile_run/4
 	]).
 
 %% Private API
@@ -57,17 +57,22 @@ main([]) ->
     run_and_format(10, 5000, 80, 100),
     run_and_format(100, 5000, 80, 100),
     run_and_format(1000, 5000, 80, 100),
-    run_and_format(1000, 50000, 20, 100).
+    run_and_format(1000, 50000, 20, 100);
+main(["profile"]) ->
+    {ok, _} = application:ensure_all_started(solo),
+    
+    profile_run_and_format(100, 1000, 1000, 0).
+
 
 %% @doc
 %% Perform a run, but with profiling of solo.
 %% @end
--spec profile_run(NumKeys, NumProcs, CallsPerProc, MaxDelayMs) -> ok when
+-spec profile_run_and_format(NumKeys, NumProcs, CallsPerProc, MaxDelayMs) -> ok when
       NumKeys :: pos_integer(),
       NumProcs :: pos_integer(),
       CallsPerProc :: pos_integer(),
-      MaxDelayMs :: pos_integer().
-profile_run(NumKeys, NumProcs, CallsPerProc, MaxDelayMs) ->
+      MaxDelayMs :: non_neg_integer().
+profile_run_and_format(NumKeys, NumProcs, CallsPerProc, MaxDelayMs) ->
     SoloProcs = lists:map(fun({_, Pid, _, _}) -> Pid end,
 			  supervisor:which_children(solo_sup)),
 
