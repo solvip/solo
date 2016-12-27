@@ -126,7 +126,7 @@ handle_cast(_Msg, State) ->
 handle_info({return, RunnerPid, Key, Result}, State) ->
     %% Send the response to waiting clients.
     Clients = erlang:erase(?client_key(Key)),
-    reply_to_clients(Clients, Result),
+    multireply(Clients, Result),
 
     %% Cancel the timeout timer, remove the runner as a running process.
     {Key, TimerRef} = erlang:erase(?runner_key(RunnerPid)),
@@ -162,8 +162,14 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
-reply_to_clients([], _) ->
+%% @doc
+%% Like gen_server:reply/2, but for replying to a list of clients.
+%% @end
+-spec multireply(Clients, Reply) -> ok when
+      Clients :: [{pid(), term()}],
+      Reply :: term().
+multireply([], _Reply) ->
     ok;
-reply_to_clients([Client | Clients], Result) ->
-    gen_server:reply(Client, Result),
-    reply_to_clients(Clients, Result).
+multireply([Client | Rest], Reply) ->
+    gen_server:reply(Client, Reply),
+    multireply(Rest, Reply).
