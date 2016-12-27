@@ -6,6 +6,11 @@ all:
 shell:
 	./rebar3 shell
 
-bench:
+escriptize:
 	./rebar3 escriptize
+
+bench: escriptize
 	./_build/default/bin/solo_bench
+
+profile: escriptize
+	./_build/default/bin/solo_bench profile
