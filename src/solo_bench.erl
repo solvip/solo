@@ -21,7 +21,7 @@
 
 -record(results, { time_taken :: float()
 		 , total_calls :: pos_integer()
-		 , calls_per_second :: float()
+		 , calls_per_second :: pos_integer()
 		 }).
 
 %%%===================================================================
@@ -88,7 +88,7 @@ profile_run_and_format(NumKeys, NumProcs, CallsPerProc, MaxDelayMs) ->
       NumKeys :: pos_integer(),
       NumProcs :: pos_integer(),
       CallsPerProc :: pos_integer(),
-      MaxDelayMs :: pos_integer().
+      MaxDelayMs :: non_neg_integer().
 run_and_format(NumKeys, NumProcs, CallsPerProc, MaxDelayMs) ->
     io:format("~p procs, ~p calls each, ~p keys, up to ~p ms latency per call:~n",
 	      [NumProcs, CallsPerProc, NumKeys, MaxDelayMs]),
@@ -106,7 +106,7 @@ run_and_format(NumKeys, NumProcs, CallsPerProc, MaxDelayMs) ->
       NumKeys :: pos_integer(),
       NumProcs :: pos_integer(),
       CallsPerProc :: pos_integer(),
-      MaxDelayMs :: pos_integer().
+      MaxDelayMs :: non_neg_integer().
 run(NumKeys, NumProcs, CallsPerProc, MaxDelayMs) ->
     {MicroSec, ok} = 
 	timer:tc(fun() ->
