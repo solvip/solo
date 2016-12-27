@@ -10,19 +10,9 @@
 %%===================================================================
 
 start(_StartType, _StartArgs) ->
-    NumWorkers = application:get_env(solo, pool_size, default_num_workers()),
+    DefaultNumWorkers = erlang:system_info(schedulers_online) * 2,
+    NumWorkers = application:get_env(solo, pool_size, DefaultNumWorkers),
     solo_sup:start_link(NumWorkers).
 
 stop(_State) ->
     ok.
-
-%%===================================================================
-%% Internal
-%%===================================================================
-
-%% @doc
-%% Default to double the number of scheduler threads
-%% @end
--spec default_num_workers() -> pos_integer().
-default_num_workers() ->
-    erlang:system_info(schedulers_online) * 2.
